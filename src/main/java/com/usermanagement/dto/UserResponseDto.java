@@ -1,4 +1,4 @@
-package com.vimal.code.ToDo.dto.resp;
+package com.usermanagement.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,9 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserResponseDto {
+    private long id;
     private String name;
     private String email;
-//    private String password;
     private String aboutMe;
-    private long  id;
+    private CategoryDto category;
 }

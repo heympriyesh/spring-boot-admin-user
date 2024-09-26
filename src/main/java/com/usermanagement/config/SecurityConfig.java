@@ -30,6 +30,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.disable())
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests.
                         requestMatchers("/user").authenticated().
+                        requestMatchers("/categories/**").authenticated().
                         requestMatchers("/home").permitAll().
                         requestMatchers("/auth/login").permitAll().
                         requestMatchers("/auth/create").permitAll().

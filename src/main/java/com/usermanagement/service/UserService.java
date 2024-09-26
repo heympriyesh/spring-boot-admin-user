@@ -1,13 +1,13 @@
 package com.usermanagement.service;
 
-import com.usermanagement.dto.req.UserRequestDto;
-import com.usermanagement.dto.resp.UserResponseDto;
+import com.usermanagement.dto.UserRequestDto;
+import com.usermanagement.dto.UserResponseDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
 public interface UserService extends UserDetailsService {
     List<UserResponseDto> getAllUser();
-    public UserResponseDto createUser(UserRequestDto userRequestDto);
+    UserResponseDto createUser(UserRequestDto userRequestDto);
 
 }

@@ -1,11 +1,11 @@
 package com.usermanagement.controllers;
 
-import com.usermanagement.dto.req.JwtRequest;
-import com.usermanagement.dto.req.UserRequestDto;
-import com.usermanagement.dto.resp.UserResponseDto;
 import com.usermanagement.Auth.JwtHelper;
 import com.usermanagement.config.AuthConfig;
 import com.usermanagement.dto.ApiResponse;
+import com.usermanagement.dto.UserRequestDto;
+import com.usermanagement.dto.UserResponseDto;
+import com.usermanagement.dto.req.JwtRequest;
 import com.usermanagement.exp.UserAlreadyExistsException;
 import com.usermanagement.service.UserService;
 import org.slf4j.Logger;
@@ -76,7 +76,7 @@ public class AuthController {
         System.out.println(password);
         System.out.println("------");
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(email, password);
-        System.out.println(authentication.toString()+"  do authenticarte");
+        System.out.println(authentication +"  do authenticarte");
         try {
             System.out.println("Started");
             manager.authenticate(authentication);

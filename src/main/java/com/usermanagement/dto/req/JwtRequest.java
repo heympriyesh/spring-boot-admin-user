@@ -1,6 +1,5 @@
 package com.usermanagement.dto.req;
 
-
 import lombok.*;
 
 @Getter

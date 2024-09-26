@@ -2,10 +2,7 @@ package com.usermanagement.enitiy;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -16,6 +13,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 @Table (name = "userDb")
 public class UserEnitiy implements UserDetails {
         @Id
@@ -30,7 +28,7 @@ public class UserEnitiy implements UserDetails {
         private String password;
         private String aboutMe;
 
-        @ManyToOne
+        @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name="category_id",referencedColumnName = "id")
         private CategoryEntity category;
 

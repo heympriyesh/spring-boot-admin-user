@@ -1,12 +1,12 @@
 package com.usermanagement.service.imp;
 
-import com.usermanagement.dto.req.UserRequestDto;
-import com.usermanagement.dto.resp.UserResponseDto;
-import com.usermanagement.enitiy.UserEnitiy;
-import com.usermanagement.service.UserService;
 import com.usermanagement.config.AuthConfig;
+import com.usermanagement.dto.UserRequestDto;
+import com.usermanagement.dto.UserResponseDto;
+import com.usermanagement.enitiy.UserEnitiy;
 import com.usermanagement.exp.UserAlreadyExistsException;
 import com.usermanagement.repo.UserRepo;
+import com.usermanagement.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
