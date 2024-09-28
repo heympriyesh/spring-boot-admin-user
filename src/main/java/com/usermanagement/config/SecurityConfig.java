@@ -29,9 +29,9 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests.
-                        requestMatchers("/user").authenticated().
-                        requestMatchers("/categories/**").authenticated().
-                        requestMatchers("/home").permitAll().
+                        requestMatchers("/user").hasAnyRole("ADMIN", "USER").
+                        requestMatchers("/categories/**").hasAnyRole("ADMIN", "USER").
+                        requestMatchers("/home").hasRole("ADMIN").
                         requestMatchers("/auth/login").permitAll().
                         requestMatchers("/auth/create").permitAll().
                         anyRequest().authenticated())

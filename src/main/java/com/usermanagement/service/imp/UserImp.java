@@ -4,17 +4,23 @@ import com.usermanagement.config.AuthConfig;
 import com.usermanagement.dto.CategoryDto;
 import com.usermanagement.dto.UserRequestDto;
 import com.usermanagement.dto.UserResponseDto;
+import com.usermanagement.enitiy.CategoryEntity;
 import com.usermanagement.enitiy.UserEntity;
+import com.usermanagement.exception.ResourceNotFoundException;
 import com.usermanagement.exp.UserAlreadyExistsException;
+import com.usermanagement.repo.CategoryRepo;
 import com.usermanagement.repo.UserRepo;
 import com.usermanagement.service.UserService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,16 +34,20 @@ public class UserImp implements UserService {
     private ModelMapper modelMapper;
     @Autowired
     private AuthConfig authConfig;
+
+    @Autowired
+    private CategoryRepo categoryRepo;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userRepo.findByEmail(username).orElseThrow(() -> new RuntimeException("User not found"));
-        System.out.println("Retrived Data");
-        System.out.println(user.getPassword()+"Retrived Password");
-        System.out.println(user.getUsername());
-        System.out.println(user.getId());
-        System.out.println(user.getEmail());
-        System.out.println("-----");
-        return user;
+        UserEntity user = this.findByEmail(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        // Assuming each user has a single role stored in a field called 'role'
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole());
+
+        // Ensure a non-null authorities collection is returned
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), Collections.singletonList(authority));
     }
 
     @Override
@@ -52,7 +62,8 @@ public class UserImp implements UserService {
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
         Optional<UserEntity> foundUser = this.userRepo.findByEmail(userRequestDto.getEmail());
         if (foundUser.isEmpty()) {
-            UserEntity user = this.userReqDtoToUserEntity(userRequestDto);
+            CategoryEntity category = categoryRepo.findById(userRequestDto.getCategory_id()).orElseThrow(() -> new ResourceAccessException("Category not found with ID :" + userRequestDto.getCategory_id()));
+            UserEntity user = this.userReqDtoToUserEntity(userRequestDto, category);
             user.setPassword(authConfig.passwordEncoder().encode(user.getPassword()));
             UserEntity createdUser = userRepo.save(user);
             return this.userEntityToUserRespDto(createdUser);
@@ -63,8 +74,9 @@ public class UserImp implements UserService {
     }
 
 
-    public UserEntity userReqDtoToUserEntity(UserRequestDto userReqDto) {
+    public UserEntity userReqDtoToUserEntity(UserRequestDto userReqDto, CategoryEntity category) {
         UserEntity user = this.modelMapper.map(userReqDto, UserEntity.class);
+        user.setCategory(category);
         return user;
     }
 
@@ -111,5 +123,10 @@ public class UserImp implements UserService {
         } else {
             throw new RuntimeException("User with id " + id + " not found");
         }
+    }
+
+    @Override
+    public UserEntity findByEmail(String email) {
+        return this.userRepo.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
     }
 }

@@ -10,5 +10,7 @@ public class UserResponseDto {
     private String name;
     private String email;
     private String aboutMe;
+    private String role;
     private CategoryDto category;
+
 }

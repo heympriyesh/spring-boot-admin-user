@@ -18,8 +18,8 @@ import java.util.Collection;
 @Entity(name = "userDb")
 public class UserEntity implements UserDetails {
         @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
-        private long id;
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private int id;
 
         @Column(nullable = false)
         private String name;
@@ -32,6 +32,9 @@ public class UserEntity implements UserDetails {
 
         @Column(name = "about_me")
         private String aboutMe;
+
+        @Column(nullable = false)
+        private String role = "USER";
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name="category_id",referencedColumnName = "id")

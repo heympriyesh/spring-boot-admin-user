@@ -2,6 +2,7 @@ package com.usermanagement.service;
 
 import com.usermanagement.dto.UserRequestDto;
 import com.usermanagement.dto.UserResponseDto;
+import com.usermanagement.enitiy.UserEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
@@ -18,4 +19,5 @@ public interface UserService extends UserDetailsService {
 
     void deleteUserById(int id);
 
+    UserEntity findByEmail(String email);
 }

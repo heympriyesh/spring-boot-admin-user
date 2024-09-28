@@ -31,6 +31,7 @@ public class AuthController {
     private AuthConfig authConfig;
     @Autowired
     private UserDetailsService userDetailsService;
+
     @Autowired
     private AuthenticationManager manager;
     @Autowired
@@ -45,8 +46,8 @@ public class AuthController {
     public ResponseEntity<ApiResponse<String>> createUser(@RequestBody UserRequestDto userRequestDto) {
         try {
             UserResponseDto userResponseDto = userService.createUser(userRequestDto);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userResponseDto.getEmail());
-            System.out.println("from db info");
+            UserDetails userDetails = userService.loadUserByUsername(userResponseDto.getEmail());
+            System.out.println("from db info" + userDetails);
             System.out.println(userDetails.getUsername());
             System.out.println(userDetails.getPassword());
 
@@ -64,7 +65,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<String>> login(@RequestBody JwtRequest jwtRequest) {
         this.doAuthenticate(jwtRequest.getEmail(), jwtRequest.getPassword());
-        UserDetails userDetails = userDetailsService.loadUserByUsername(jwtRequest.getEmail());
+        UserDetails userDetails = userService.loadUserByUsername(jwtRequest.getEmail());
         String token = this.helper.generateToken(userDetails);
 //        JwtResponse jwtResponse = JwtResponse.builder().token(token).build();
         return new ResponseEntity<>(ApiResponse.success("Token generated successfully",token), HttpStatus.OK);

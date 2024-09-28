@@ -11,6 +11,7 @@ public class UserRequestDto {
     private String email;
     private String password;
     private String aboutMe;
-
+    private int category_id;
+    private String role;
 
 }
