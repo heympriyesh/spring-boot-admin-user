@@ -1,9 +1,10 @@
 package com.usermanagement.service.imp;
 
 import com.usermanagement.config.AuthConfig;
+import com.usermanagement.dto.CategoryDto;
 import com.usermanagement.dto.UserRequestDto;
 import com.usermanagement.dto.UserResponseDto;
-import com.usermanagement.enitiy.UserEnitiy;
+import com.usermanagement.enitiy.UserEntity;
 import com.usermanagement.exp.UserAlreadyExistsException;
 import com.usermanagement.repo.UserRepo;
 import com.usermanagement.service.UserService;
@@ -28,7 +29,7 @@ public class UserImp implements UserService {
     private AuthConfig authConfig;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEnitiy user = userRepo.findByEmail(username).orElseThrow(()->new RuntimeException("User not found"));
+        UserEntity user = userRepo.findByEmail(username).orElseThrow(() -> new RuntimeException("User not found"));
         System.out.println("Retrived Data");
         System.out.println(user.getPassword()+"Retrived Password");
         System.out.println(user.getUsername());
@@ -40,19 +41,19 @@ public class UserImp implements UserService {
 
     @Override
     public List<UserResponseDto> getAllUser() {
-        List<UserEnitiy> userEnitiys = userRepo.findAll();
-        List<UserResponseDto> userResponseDtoList = userEnitiys.stream().map(user->this.userEntityToUserRespDto(user)).collect(Collectors.toList());
+        List<UserEntity> userEntities = userRepo.findAll();
+        List<UserResponseDto> userResponseDtoList = userEntities.stream().map(user -> this.userEntityToUserRespDto(user)).collect(Collectors.toList());
         return userResponseDtoList;
 
 
     }
     @Override
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
-        Optional<UserEnitiy> foundUser = this.userRepo.findByEmail(userRequestDto.getEmail());
+        Optional<UserEntity> foundUser = this.userRepo.findByEmail(userRequestDto.getEmail());
         if (foundUser.isEmpty()) {
-            UserEnitiy user = this.userReqDtoToUserEntity(userRequestDto);
+            UserEntity user = this.userReqDtoToUserEntity(userRequestDto);
             user.setPassword(authConfig.passwordEncoder().encode(user.getPassword()));
-            UserEnitiy createdUser = userRepo.save(user);
+            UserEntity createdUser = userRepo.save(user);
             return this.userEntityToUserRespDto(createdUser);
         } else {
             // User already exists, throw an exception
@@ -61,12 +62,35 @@ public class UserImp implements UserService {
     }
 
 
-    public UserEnitiy userReqDtoToUserEntity(UserRequestDto userReqDto){
-        UserEnitiy user = this.modelMapper.map(userReqDto,UserEnitiy.class);
+    public UserEntity userReqDtoToUserEntity(UserRequestDto userReqDto) {
+        UserEntity user = this.modelMapper.map(userReqDto, UserEntity.class);
         return user;
     }
-    public UserResponseDto userEntityToUserRespDto(UserEnitiy user){
+
+    public UserResponseDto userEntityToUserRespDto(UserEntity user) {
         UserResponseDto userRespDto = this.modelMapper.map(user,UserResponseDto.class);
         return userRespDto;
     }
+
+    public List<UserResponseDto> findAll() {
+        List<UserEntity> allUsers = userRepo.findAll();
+        List<UserResponseDto> userMapper = allUsers.stream()
+                .map(user -> {
+                    UserResponseDto dto = modelMapper.map(user, UserResponseDto.class);
+                    if (user.getCategory() != null) {
+                        CategoryDto categoryDto = modelMapper.map(user.getCategory(), CategoryDto.class);
+                        dto.setCategory(categoryDto);
+                    }
+                    return dto;
+                }).collect(Collectors.toList());
+        return userMapper;
+    }
+
+    @Override
+    public List<UserResponseDto> getUserListByCategoryId(int categoryId) {
+        List<UserEntity> userListByCategoryId = userRepo.getUserListByCategoryId(categoryId);
+        return userListByCategoryId.stream().map(user -> modelMapper.map(user, UserResponseDto.class)).collect(Collectors.toList());
+    }
+
+
 }

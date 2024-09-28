@@ -22,3 +22,18 @@ This repository contains a comprehensive example of token-based authentication u
 - Maven
 - MySQL 8.0 or later
 - MySQL WorkBench
+
+## Features
+
+- JWT Authentication
+- Forgot password
+- Email Sender
+- Hibernate/JPA
+- CRUD Endpoints
+- Soft Delete
+- Live Search
+- Pagination
+- Use of Custom Query in JPA
+- Admin / User Roles
+- Protected Endpoints
+- Use of third party api

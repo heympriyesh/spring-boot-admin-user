@@ -8,24 +8,29 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-@Entity
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
 @Table (name = "userDb")
-public class UserEnitiy implements UserDetails {
+@Entity(name = "userDb")
+public class UserEntity implements UserDetails {
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
         private long id;
+
         @Column(nullable = false)
         private String name;
 
         @Column(unique = true,nullable = false)
         private String email;
+
         @Column(nullable = false)
         private String password;
+
+        @Column(name = "about_me")
         private String aboutMe;
 
         @ManyToOne(fetch = FetchType.LAZY)

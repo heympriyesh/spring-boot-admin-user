@@ -1,43 +1,29 @@
 package com.usermanagement.controllers;
 
 import com.usermanagement.dto.ApiResponse;
-import com.usermanagement.dto.CategoryDto;
 import com.usermanagement.dto.UserResponseDto;
-import com.usermanagement.enitiy.UserEnitiy;
-import com.usermanagement.repo.UserRepo;
+import com.usermanagement.service.imp.UserImp;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
+
     @Autowired
-    private UserRepo userRepo;
+    private UserImp userImp;
 
     @Autowired
     private ModelMapper modelMapper;
     @GetMapping
     public ResponseEntity<ApiResponse<List<UserResponseDto>>> getAllUser() {
-        List<UserEnitiy> allUsers = userRepo.findAll();
-        List<UserResponseDto> userMapper = allUsers.stream()
-                .map(user -> {
-                    UserResponseDto dto = modelMapper.map(user, UserResponseDto.class);
-                    if (user.getCategory() != null) {
-                        CategoryDto categoryDto = modelMapper.map(user.getCategory(), CategoryDto.class);
-                        dto.setCategory(categoryDto);
-                    }
-                    return dto;
-                }).collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("User fetched successfully", userMapper));
+        List<UserResponseDto> userData = userImp.findAll();
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("User fetched successfully", userData));
     }
 
     @PostMapping
@@ -46,4 +32,10 @@ public class UserController {
         return null;
     }
 
+    @GetMapping("/category/{id}")
+    public ResponseEntity<ApiResponse<List<UserResponseDto>>> getAllUserDetailsByCategoryId(@PathVariable("id") int id) {
+        List<UserResponseDto> userListByCategoryId = userImp.getUserListByCategoryId(id);
+        System.out.println("userList By Cateogry Id" + userListByCategoryId);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Done", userListByCategoryId));
+    }
 }

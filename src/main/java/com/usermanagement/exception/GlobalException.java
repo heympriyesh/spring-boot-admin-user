@@ -30,7 +30,7 @@ public class GlobalException {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
-        ErrorResponse errorResponse = new ErrorResponse(false, "An unexpected error occurred" + ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(false, "An unexpected error occurred " + ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
