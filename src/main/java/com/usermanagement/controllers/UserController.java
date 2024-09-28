@@ -38,4 +38,21 @@ public class UserController {
         System.out.println("userList By Cateogry Id" + userListByCategoryId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Done", userListByCategoryId));
     }
+
+    @DeleteMapping("/removeUser")
+    public ResponseEntity<ApiResponse<String>> deleteUserByEmail(
+            @RequestParam(required = false) Integer id,
+            @RequestParam(required = false) String email
+    ) {
+        System.out.println("email " + email);
+        if (id != null) {
+            userImp.deleteUserById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("User deleted successfully by id"));
+        } else if (email != null) {
+            userImp.deleteUserByEmail(email);
+            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("User deleted successfully by email."));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error("Either ID or email must be provided to delete a user."));
+        }
+    }
 }

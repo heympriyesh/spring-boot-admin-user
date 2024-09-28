@@ -14,4 +14,8 @@ public interface UserService extends UserDetailsService {
 
     List<UserResponseDto> getUserListByCategoryId(int categoryId);
 
+    void deleteUserByEmail(String email);
+
+    void deleteUserById(int id);
+
 }

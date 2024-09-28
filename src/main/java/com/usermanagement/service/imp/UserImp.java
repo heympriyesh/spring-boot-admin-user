@@ -8,6 +8,7 @@ import com.usermanagement.enitiy.UserEntity;
 import com.usermanagement.exp.UserAlreadyExistsException;
 import com.usermanagement.repo.UserRepo;
 import com.usermanagement.service.UserService;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -92,5 +93,23 @@ public class UserImp implements UserService {
         return userListByCategoryId.stream().map(user -> modelMapper.map(user, UserResponseDto.class)).collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional
+    public void deleteUserByEmail(String email) {
+        if (this.userRepo.existsByEmail(email)) {
+            this.userRepo.deleteUserByEmail(email);
+        } else {
+            throw new RuntimeException("User with email " + email + " not found");
+        }
+    }
 
+    @Override
+    @Transactional
+    public void deleteUserById(int id) {
+        if (this.userRepo.existsById(id)) {
+            this.userRepo.deleteUserById(id);
+        } else {
+            throw new RuntimeException("User with id " + id + " not found");
+        }
+    }
 }
