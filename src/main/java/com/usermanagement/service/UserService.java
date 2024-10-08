@@ -11,8 +11,6 @@ public interface UserService extends UserDetailsService {
     List<UserResponseDto> getAllUser();
     UserResponseDto createUser(UserRequestDto userRequestDto);
 
-    List<UserResponseDto> findAll();
-
     List<UserResponseDto> getUserListByCategoryId(int categoryId);
 
     void deleteUserByEmail(String email);
@@ -20,4 +18,6 @@ public interface UserService extends UserDetailsService {
     void deleteUserById(int id);
 
     UserEntity findByEmail(String email);
+
+    void updateUserRole(String role, int id);
 }

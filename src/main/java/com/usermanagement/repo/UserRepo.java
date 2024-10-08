@@ -13,6 +13,8 @@ public interface UserRepo extends JpaRepository<UserEntity, Long> {
 
     Optional<UserEntity> findByEmail(String email);
 
+    UserEntity findByResetPasswordToken(String token);
+
     @Query(value = "Select * from user_db u where u.category_id In (select id from category where id=?1)", nativeQuery = true)
     List<UserEntity> getUserListByCategoryId(int categoryId);
 
@@ -28,4 +30,11 @@ public interface UserRepo extends JpaRepository<UserEntity, Long> {
 
     boolean existsById(int id);
 
+    @Modifying
+    @Query(value = "update user_db u set u.role= :roleName where u.id= :id", nativeQuery = true)
+    void updateUserRole(@Param("roleName") String roleName,
+                        @Param("id") int id);
+
+    @Query(value = "Select * from user_db u where u.id=:id", nativeQuery = true)
+    Optional<UserEntity> getUserById(@Param("id") int id);
 }

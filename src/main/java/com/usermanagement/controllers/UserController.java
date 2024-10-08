@@ -20,11 +20,7 @@ public class UserController {
 
     @Autowired
     private ModelMapper modelMapper;
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<UserResponseDto>>> getAllUser() {
-        List<UserResponseDto> userData = userImp.findAll();
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("User fetched successfully", userData));
-    }
+
 
     @PostMapping
     public ResponseEntity<ApiResponse<UserResponseDto>> createUser() {

@@ -1,6 +1,8 @@
 package com.usermanagement.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
@@ -18,6 +20,10 @@ public class ApiResponse<T> {
 
     public static <T> ApiResponse<T> success(String message, T data) {
         return new ApiResponse<>(true, message, data);
+    }
+
+    public static <T> ApiResponse<T> success(String message) {
+        return new ApiResponse<>(true, message, null);
     }
 
     public static <T> ApiResponse<T> error(String message) {

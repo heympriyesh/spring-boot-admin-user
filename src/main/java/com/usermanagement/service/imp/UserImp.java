@@ -12,8 +12,12 @@ import com.usermanagement.repo.CategoryRepo;
 import com.usermanagement.repo.UserRepo;
 import com.usermanagement.service.UserService;
 import jakarta.transaction.Transactional;
+import lombok.NonNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -85,8 +89,10 @@ public class UserImp implements UserService {
         return userRespDto;
     }
 
-    public List<UserResponseDto> findAll() {
-        List<UserEntity> allUsers = userRepo.findAll();
+    public List<UserResponseDto> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<UserEntity> allUsers = userRepo.findAll(pageable);
         List<UserResponseDto> userMapper = allUsers.stream()
                 .map(user -> {
                     UserResponseDto dto = modelMapper.map(user, UserResponseDto.class);
@@ -129,4 +135,16 @@ public class UserImp implements UserService {
     public UserEntity findByEmail(String email) {
         return this.userRepo.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
     }
+
+    @Override
+    @Transactional
+    public void updateUserRole(@NonNull String role, int id) {
+        Optional<UserEntity> userById = this.userRepo.getUserById((id));
+        if (userById.isEmpty()) {
+            throw new ResourceNotFoundException("User not found with id " + id);
+        }
+        System.out.println(userById);
+        this.userRepo.updateUserRole(role, id);
+    }
+
 }

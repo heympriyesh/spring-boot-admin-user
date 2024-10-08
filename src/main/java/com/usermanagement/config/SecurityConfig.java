@@ -34,6 +34,8 @@ public class SecurityConfig {
                         requestMatchers("/home").hasRole("ADMIN").
                         requestMatchers("/auth/login").permitAll().
                         requestMatchers("/auth/create").permitAll().
+                        requestMatchers("/auth/forgot").permitAll().
+                        requestMatchers("/auth/reset-password").permitAll().
                         anyRequest().authenticated())
                 .exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint)) // if any exception came
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // nothing to save on server
